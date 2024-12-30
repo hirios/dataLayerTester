@@ -306,9 +306,6 @@
 
         if (data) {
             for (let index_gravacao = 0; index_gravacao < data_length; index_gravacao++) {
-                console.log('Tentando gravar', index_gravacao)
-                console.log(data[index_gravacao]['id_gravacao'])
-
                 if (data[index_gravacao]['url_page'] == window.location.host) {
 
                     // Caso exista a estrtutura, procura o id_da gravação
@@ -324,7 +321,6 @@
                 // Se ainda não existir esse id, é uma gravação nova e não uma atualização
                 data.push(DLTESTERDATA);
                 localStorage['DLTESTERDATA'] = JSON.stringify(data);
-                console.log('ESTRUTURA novaaa CRIADA');
             }
            
             // Se não tiver, popula o localStorage com o dataLayerTester
@@ -385,9 +381,6 @@
     function editarEtapa(element) {
         window.DLTESTER_EDIT = element.value - 1;
         const objetoEtapa = DLTESTERDATA['etapas'][DLTESTER_EDIT];
-
-        console.log('editando')
-        console.log(objetoEtapa)
         
         if (objetoEtapa['tipo_da_etapa'] == 'interacao') {
             htmlInteracoes();
@@ -627,4 +620,95 @@
     })();
 
 
-    htmlStart();
+htmlStart();
+
+
+// Função para garantir que os inputs não sejam bloqueados pelo modal
+function ensureInputAccessibility() {
+    const janelaPrincipal = document.getElementById('janelaPrincipal');
+    if (!janelaPrincipal) return;
+
+    // Garantir que a interface fique sempre no topo
+    janelaPrincipal.style.zIndex = `${Number.MAX_SAFE_INTEGER}`;
+    janelaPrincipal.style.pointerEvents = 'auto'; // Permite interação com a interface
+
+    // Desabilitar a interação com o modal (impede que sobreponha os inputs)
+    const modals = document.querySelectorAll('.modal, .modal-backdrop');
+    modals.forEach((modal) => {
+        modal.style.pointerEvents = 'none'; // Impede a interação com o modal
+    });
+
+    // Garantir que os inputs possam ser focados
+    const inputs = janelaPrincipal.querySelectorAll('input');
+    inputs.forEach((input) => {
+        input.style.pointerEvents = 'auto'; // Permite que os inputs sejam interativos
+    });
+}
+
+// Chama a função para garantir a acessibilidade dos inputs
+ensureInputAccessibility();
+
+
+
+// (function () {
+//     // Garantir que a janela principal (interface) fique sempre no topo
+//     function ensureOnTop() {
+//         const janelaPrincipal = document.getElementById('janelaPrincipal');
+//         if (janelaPrincipal) {
+//             // Colocar o maior z-index possível para a janela principal
+//             janelaPrincipal.style.zIndex = `${Number.MAX_SAFE_INTEGER}`;
+//             janelaPrincipal.style.pointerEvents = 'auto'; // Permite interação com a interface
+//         }
+//     }
+
+//     // Impedir que overlays (backdrop) e modais interfiram na interação com a interface
+//     function disableModalInteraction() {
+//         const modals = document.querySelectorAll('.modal, .modal-backdrop');
+//         modals.forEach((modal) => {
+//             // Desativa qualquer interação com o backdrop e o modal
+//             modal.style.pointerEvents = 'none'; // Evita que o modal capture eventos
+//         });
+//     }
+
+//     // Garantir que os modais fiquem abaixo da janela principal (ajustando z-index)
+//     function ensureModalBelowInterface() {
+//         const modals = document.querySelectorAll('.modal, .modal-backdrop');
+//         modals.forEach((modal) => {
+//             // Definir z-index do modal e backdrop para ser menor que o da janelaPrincipal
+//             modal.style.zIndex = '9999'; // Um valor abaixo do da janelaPrincipal
+//         });
+//     }
+
+//     // Prevenir que eventos de interação (como cliques) no modal bloqueiem a interface
+//     function preventEventBlocking() {
+//         const janelaPrincipal = document.getElementById('janelaPrincipal');
+//         if (!janelaPrincipal) return;
+
+//         // Impede que cliques e outros eventos dentro da janelaPrincipal sejam capturados por modais ou overlays
+//         janelaPrincipal.addEventListener('mousedown', (e) => e.stopPropagation(), true);
+//         janelaPrincipal.addEventListener('click', (e) => e.stopPropagation(), true);
+//         janelaPrincipal.addEventListener('focus', (e) => e.stopPropagation(), true);
+//     }
+
+//     // Função para garantir que a interface e o modal não bloqueiem um ao outro
+//     function updateInterfaceAndModal() {
+//         ensureOnTop();               // Coloca a interface no topo
+//         disableModalInteraction();   // Desativa interação com modais
+//         ensureModalBelowInterface(); // Coloca o modal abaixo da interface
+//     }
+
+//     // Monitorar alterações no DOM para quando novos modais forem inseridos
+//     const observer = new MutationObserver(() => {
+//         updateInterfaceAndModal(); // Atualiza z-index e interação quando o DOM mudar
+//     });
+
+//     // Iniciar o observador no corpo do documento
+//     observer.observe(document.body, {
+//         childList: true,
+//         subtree: true,
+//     });
+
+//     // Aplicar ajustes iniciais na interface e modais
+//     updateInterfaceAndModal();
+// })();
+

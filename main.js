@@ -119,13 +119,11 @@ function htmlStart() {
     document.querySelector('[id="janelaPrincipal"]').innerHTML = `
 <div id="janelaPrincipal">
 <div id="janelaPrincipal">
-<button class="close-button" onclick="htmlStart(); closeEditEtapa();" style="position: relative; top: 5px; left: 280px;">✖</button>
+<button class="close-button" closeEditEtapa();" style="position: relative; top: 5px; left: 280px;">✖</button>
 <div class="div-inputs-superiores">
 <input class="input-superior" id="nome_para_gravacao" placeholder="Nome para gravação" style="height: 47px;">
 </div>
-<button class="botao-prosseguir" onclick="objetoDLTESTERDATA();" style="
-height: 47px;
-">
+<button class="botao-prosseguir" style="height: 47px;">
 Prosseguir gravação
 </button>
 
@@ -146,14 +144,14 @@ Prosseguir gravação
 function htmlGravacoes() {
     document.querySelector('[id="janelaPrincipal"]').innerHTML = `
 <div id="janelaPrincipal">
-<button class="close-button" onclick="htmlStart(); closeEditEtapa();" style="top: 5px;position: relative;left: 280px;">✖</button>
+<button class="close-button" style="top: 5px;position: relative;left: 280px;">✖</button>
 <div class="div-botoes-superiores">
-    <button id="interagir-com-elemento" onclick="htmlInteracoes()" class="botao-superior">INTERAGIR COM ELEMENTO</button>
-    <button id="ir-para-pagina" onclick="htmlNavegacao()" class="botao-superior">IR PARA PÁGINA</button>
+    <button id="interagir-com-elemento" class="botao-superior">INTERAGIR COM ELEMENTO</button>
+    <button id="ir-para-pagina" class="botao-superior">IR PARA PÁGINA</button>
     <button id="verificar-datalayer" class="botao-superior">VERIFICAR DATALAYER</button>
 </div>
 <!-- Novo botão posicionado exatamente acima do container de tarefas -->
-<button id="validaEtapas" onClick="executarGravacoes()">Testar etapas</button>
+<button id="validaEtapas">Testar etapas</button>
 <div id="container-tarefas">
     <div id="div-tarefas">                
     </div>
@@ -169,7 +167,7 @@ function htmlGravacoes() {
 function htmlInteracoes() {
     document.querySelector('[id="janelaPrincipal"]').innerHTML = `
 <div id="janelaPrincipal">
-<button class="close-button" onclick="htmlGravacoes(); closeEditEtapa();" style="top: 5px;position: relative;left: 280px;">✖</button>
+<button class="close-button" style="top: 5px;position: relative;left: 280px;">✖</button>
 <div class="div-inputs-superiores">
 <input class="input-superior" id="selector_css_elemento" style="height: 47px;" placeholder="Seletor do elemento">
 <div class="sub-input">
@@ -179,7 +177,7 @@ function htmlInteracoes() {
 <input class="input-superior" id="preencher_input" style="height: 47px;" placeholder="Preencher Input (opcional)">
 <input class="input-superior" id="delay_ms" style="height: 47px;" placeholder="Delay ms">
 </div>
-<button id="add-interacao" onClick="adicionarEtapa(&quot;interacao&quot;);"  class="botao-add-etapa">Gravar etapa</button>
+<button id="add-interacao" class="botao-add-etapa">Gravar etapa</button>
 
 </div>
 `
@@ -190,13 +188,13 @@ function htmlInteracoes() {
 function htmlNavegacao() {
     document.querySelector('[id="janelaPrincipal"]').innerHTML = `
 <div id="janelaPrincipal">
-<button class="close-button" onclick="htmlGravacoes(); closeEditEtapa();" style="top: 5px;position: relative;left: 280px;">✖</button>
+<button class="close-button" style="top: 5px;position: relative;left: 280px;">✖</button>
 <div class="div-inputs-superiores">
 <input class="input-superior" id="url_navegacao" placeholder="URL da página">
 <input class="input-superior" id="delay_ms" placeholder="Delay ms">
 </div>
 <!-- Novo botÃĢo posicionado exatamente acima do container de tarefas -->
-<button id="add-navegacao" onClick="adicionarEtapa(&quot;navegacao&quot;);" class="botao-add-etapa">Gravar etapa</button>
+<button id="add-navegacao" class="botao-add-etapa">Gravar etapa</button>
 </div>
 `
 }
@@ -455,10 +453,10 @@ function executarGravacoes(todas = false) {
         DLTESTERDATA['status_gravacao'] = 'em_execucao';
         salvarEtapas();
     }
-    
+
     const DLTESTERDATA_KEY = 'DLTESTERDATA';
     const DLTESTERDATA_LOG_KEY = 'DLTESTERDATA_LOG';
-    
+
     // Função para carregar os dados do localStorage
     function loadTesterData(key) {
         const data = localStorage.getItem(key);
@@ -478,8 +476,19 @@ function executarGravacoes(todas = false) {
                 if (step.tipo_da_etapa === 'interacao') {
                     const elements = document.querySelectorAll(step.seletor_css);
                     if (elements && elements[step.index_do_elemento]) {
-                        elements[step.index_do_elemento].click();
+                        const element = elements[step.index_do_elemento];
+
+                        // Realiza o clique no elemento
+                        element.click();
                         console.log(`Etapa ${step.etapa}: Clique realizado no seletor ${step.seletor_css}`);
+
+                        // Verifica se é um input e preenche com o valor, se disponível
+                        if (element.tagName.toLowerCase() === 'input' && step.inputValue !== undefined) {
+                            element.value = step.inputValue;
+                            element.dispatchEvent(new Event('input', { bubbles: true })); // Dispara evento para atualizar o DOM
+                            console.log(`Etapa ${step.etapa}: Input preenchido com valor '${step.inputValue}'`);
+                        }
+
                         step.status_da_etapa = 'sucesso';
                         document.querySelector(`button[value="${step.etapa}"]`).style.backgroundColor = 'rgb(95 255 107)';
                         status = 'sucesso';
@@ -586,6 +595,74 @@ function executarGravacoes(todas = false) {
     executeSteps();
 }
 
+function associaBotoes() {
+    document.addEventListener('click', (event) => {
+        const target = event.target;
+    
+        // Verifica se o elemento clicado está dentro de `#janelaPrincipal`
+        const janelaPrincipal = document.getElementById('janelaPrincipal');
+        if (!janelaPrincipal || !janelaPrincipal.contains(target)) {
+            return; // Ignora cliques fora de `#janelaPrincipal`
+        }
+    
+        // Mapeamento de elementos para funções baseado em `id`, `class` e `data-action`
+        const functionMap = {
+            'close-button': () => {
+                const botaoGravarEtapa = document.querySelector('[class="botao-add-etapa"]');
+                if (botaoGravarEtapa) {
+                    htmlGravacoes();
+                    closeEditEtapa();
+                } else {
+                    htmlStart();
+                    closeEditEtapa();
+                }
+            },
+            'botao-prosseguir': () => {
+                objetoDLTESTERDATA();
+            },
+            'validaEtapas': () => {
+                executarGravacoes();
+            },
+            'interagir-com-elemento': () => {
+                htmlInteracoes();
+            },
+            'ir-para-pagina': () => {
+                htmlNavegacao();
+            },
+            'verificar-datalayer': () => {
+                console.warn('Função verificarDatalayer ainda não definida.');
+            },
+            'add-interacao': () => {
+                adicionarEtapa("interacao");
+            },
+            'add-navegacao': () => {
+                adicionarEtapa("navegacao");
+            }
+        };
+    
+        // Verifica se o elemento possui um ID correspondente
+        if (target.id && functionMap[target.id]) {
+            functionMap[target.id]();
+            return;
+        }
+    
+        // Verifica se o elemento possui uma classe correspondente
+        target.classList.forEach((className) => {
+            if (functionMap[className]) {
+                functionMap[className]();
+                return;
+            }
+        });
+    
+        // Verifica se o elemento possui um atributo `data-action` correspondente
+        if (target.dataset.action && functionMap[target.dataset.action]) {
+            functionMap[target.dataset.action]();
+            return;
+        }
+    
+        console.log('Nenhuma ação definida para este elemento:', target);
+    });
+}
 
 (function() {
     // Criação do HTML da interface
@@ -804,6 +881,7 @@ function executarGravacoes(todas = false) {
 
 htmlStart();
 ensureInputAccessibility();
+associaBotoes();
 executarGravacoes();
 
 

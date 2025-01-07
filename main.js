@@ -123,6 +123,7 @@
       offsetX = e.clientX - janelaPrincipal.offsetLeft;
       offsetY = e.clientY - janelaPrincipal.offsetTop;
       janelaPrincipal.style.zIndex = '1000'; // Coloca o elemento no topo
+      ensureInputAccessibility();
     });
 
     // Quando o usuário mover o mouse
@@ -133,6 +134,7 @@
 
         janelaPrincipal.style.left = `${x}px`;
         janelaPrincipal.style.top = `${y}px`;
+        ensureInputAccessibility();
       }
     });
 
@@ -141,6 +143,7 @@
       if (isDragging) {
         isDragging = false;
         janelaPrincipal.style.zIndex = ''; // Reseta o z-index
+        ensureInputAccessibility();
       }
     });
   }
@@ -703,23 +706,12 @@
   (function () {
     // Criação do HTML da interface
     const interfaceHTML = `
-      <html>
-      <head>
-          <style>
-  
-          </style>
-          <script>
-  
-          </script>
-      </head>
-  
       <body>
           <div id="janelaPrincipal">
               <script>
                   htmlStart();
               </script>
-      </body>
-      </html>
+
       `;
 
     // Injetando o HTML no corpo da página
@@ -910,10 +902,14 @@
     document.head.appendChild(styleElement);
   })();
 
+
+
+
   htmlStart();
   ensureInputAccessibility();
   associaBotoes();
   executarGravacoes();
   dragAndDrop();
+
 
 })();

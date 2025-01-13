@@ -286,6 +286,7 @@
 
                     const buttonExcluir = document.createElement('button');
                     buttonExcluir.className = 'excluir-item excluir-gravacao';
+                    buttonExcluir.textContent = '-';
                     // buttonExcluir.textContent = 'x';
                     // button.addEventListener('click', function () {
                     //     objetoDLTESTERDATA(this);
@@ -317,7 +318,7 @@
 
                             const buttonExcluir = document.createElement('button');
                             buttonExcluir.className = 'excluir-item excluir-etapa';
-
+                            buttonExcluir.textContent = '-';
 
                             const container = document.getElementById('div-tarefas');
                             const button = document.createElement('button');
@@ -600,14 +601,17 @@
                         const logData = loadTesterData(DLTESTERDATA_LOG_KEY);
                         if (logData && logData.length > 0) {
                             for (let step of logData) {
-                                const etapaElement = document.querySelector(`button[value="${step.etapa}"]`);
-                                if (etapaElement && step.status_da_etapa == 'sucesso') {
-                                    etapaElement.style.backgroundColor = 'rgb(95 255 107)';
+                                if (step.id_gravacao == DLTESTERDATA.id_gravacao) {
+                                    const etapaElement = document.querySelector(`button[value="${step.etapa}"]`);
+                                    if (etapaElement && step.status_da_etapa == 'sucesso') {
+                                        etapaElement.style.backgroundColor = 'rgb(95 255 107)';
+                                    }
+    
+                                    if (etapaElement && step.status_da_etapa == 'falha') {
+                                        etapaElement.style.backgroundColor = 'rgb(255 95 95)';
+                                    }
                                 }
-
-                                if (etapaElement && step.status_da_etapa == 'falha') {
-                                    etapaElement.style.backgroundColor = 'rgb(255 95 95)';
-                                }
+      
                             }
                         }
 
@@ -959,13 +963,25 @@
         }
 
         .excluir-etapa {
-            left: -20%;
-            top: -50%;
+            left: 70%;
+            top: -80%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 800;
+            color: white;
         }
 
         .excluir-gravacao {
             left: 95%;
-            top: -60px;
+            top: -50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 800;
+            color: white;
         }        
         `;
 

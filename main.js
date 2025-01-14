@@ -1,3 +1,14 @@
+// ==UserScript==
+// @name         DataLayerTester
+// @namespace    http://tampermonkey.net/
+// @version      2025-01-11
+// @description  try to take over the world!
+// @author       You
+// @match        https://www.omie.com.br/*
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=omie.com.br
+// @grant        none
+// ==/UserScript==
+
 (function () {
     function addBlueBorder(event) {
         // Ignorar se o elemento está dentro de #janelaPrincipal
@@ -164,9 +175,9 @@
     <button class="testar-gravacoes" style="height: 47px;width: 260px;color: black;border: 3px solid;border-radius: 10px;position: relative;bottom: -60px;und;left: 50%;transform: translateX(-50%);background-color: rgb(241 225 56);top: 75px;">
     Testar todas gravacões
     </button>
-    
+
     <div style="position: absolute;display: flex;bottom: 0px;padding: 10px 16.2px;">
-    
+
     <div id="container-lista-de-gravacoes" style="bottom: 100px;/* position: inherit; */width: 280px;display: flex;flex-direction: column;height: 250px;">
     <div style="align-items: center;display: flex;flex-direction: column;background-color: #b383a5;height: 50;justify-content: center;color: white;">Lista de gravações </div>
     <div id="lista-de-gravacoes">
@@ -274,7 +285,7 @@
                     const div = document.createElement('div');
                     div.className = 'div-container';
                     // div.style.display = 'contents';
-                    
+
                     const button = document.createElement('button');
                     button.className = 'gravacao';
                     button.value = gravacao['id_gravacao'];
@@ -606,12 +617,12 @@
                                     if (etapaElement && step.status_da_etapa == 'sucesso') {
                                         etapaElement.style.backgroundColor = 'rgb(95 255 107)';
                                     }
-    
+
                                     if (etapaElement && step.status_da_etapa == 'falha') {
                                         etapaElement.style.backgroundColor = 'rgb(255 95 95)';
                                     }
                                 }
-      
+
                             }
                         }
 
@@ -778,7 +789,7 @@
         // Estilos CSS a serem injetados
         const styles = `
         @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
-    
+
         body,
         input,
         .botao-superior,
@@ -792,12 +803,12 @@
             font-family: 'Poppins', sans-serif;
             font-weight: 700;
         }
-    
+
         .botao-superior,
         .tarefas {
             font-size: 14px;
         }
-    
+
         #janelaPrincipal {
             position: fixed;
             width: 320px;
@@ -810,7 +821,7 @@
             bottom: 70px;
             right: 20px;
         }
-    
+
         .div-botoes-superiores,
         .div-inputs-superiores {
             display: flex;
@@ -818,7 +829,7 @@
             gap: 10px;
             padding: 25px;
         }
-    
+
         .botao-superior,
         .input-superior {
             background-color: rgb(217, 217, 217);
@@ -827,7 +838,7 @@
             border-radius: 10px;
             padding: 10px 10px;
         }
-    
+
         #container-tarefas {
             position: absolute;
             bottom: 30px;
@@ -841,7 +852,7 @@
             border-radius: 15px;
             overflow-y: auto;
         }
-    
+
         #div-tarefas {
             display: flex;
             flex-wrap: wrap;
@@ -850,7 +861,7 @@
             justify-content: space-between;
             align-content: center;
         }
-    
+
         .tarefas {
             background-color: rgb(104, 195, 202);
             color: black;
@@ -859,7 +870,7 @@
             height: 40px;
             border: 3px solid;
         }
-    
+
         #botao-add-gravacao {
             position: absolute;
             left: 50%;
@@ -874,7 +885,7 @@
             justify-content: center;
             align-items: center;
         }
-    
+
         .botao-add-etapa, .botao-prosseguir {
             position: absolute;
             left: 50%;
@@ -889,26 +900,26 @@
             justify-content: center;
             align-items: center;
         }
-    
+
         .sub-input {
             display: flex;
             justify-content: space-between;
         }
-    
+
         input {
             font-size: 14px;
             color: #000000;
             font-weight: 700;
             text-align: center;
         }
-    
+
         input::placeholder {
             color: #000000;
             font-size: 14px;
             text-align: center;
         }
-    
-    
+
+
         /* Botão posicionado exatamente acima do container-tarefas */
         #validaEtapas {
             position: absolute;
@@ -924,21 +935,21 @@
             width: 260px;
             font-family: 'Poppins', sans-serif;
             font-weight: 700;
-    
+
             display: flex;
             justify-content: center;
             align-items: center;
-    
+
             border-style: solid;
             border-width: 3px;
         }
-    
+
         .gravacao {
             background-color: white;
             border-radius: 10px;
             padding: 10px;
         }
-    
+
         #lista-de-gravacoes {
             display: flex;
             flex-wrap: nowrap;
@@ -949,7 +960,7 @@
             overflow-y: auto;
             height: 100%;
         }
-    
+
         button {
             cursor: pointer;
         }
@@ -982,7 +993,7 @@
             font-size: 14px;
             font-weight: 800;
             color: white;
-        }        
+        }
         `;
 
         // Criando um elemento de estilo e injetando na página

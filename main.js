@@ -551,7 +551,7 @@
                           console.log(`Etapa ${step.etapa}: Clique realizado no seletor ${step.seletor_css}`);
 
                           // Verifica se é um input e preenche com o valor, se disponível
-                          if (element.tagName.toLowerCase() === 'input' && step.inputValue !== undefined) {
+                          if ((element.tagName.toLowerCase() === 'input' || element.tagName.toLowerCase() === 'textarea') && step.inputValue !== undefined) {
                               element.value = step.inputValue;
                               element.dispatchEvent(new Event('input', { bubbles: true })); // Dispara evento para atualizar o DOM
                               console.log(`Etapa ${step.etapa}: Input preenchido com valor '${step.inputValue}'`);
@@ -726,84 +726,85 @@ function removeTabIndexAttribute() {
   
 
   function associaBotoes() {
-      document.addEventListener('click', (event) => {
-          const target = event.target;
+    document.addEventListener('click', (event) => {
+        const janelaPrincipal = document.getElementById('janelaPrincipal');
+        if (!janelaPrincipal || !janelaPrincipal.contains(event.target)) {
+            return; // Ignora cliques fora de `#janelaPrincipal`
+        }
 
-          // Verifica se o elemento clicado está dentro de `#janelaPrincipal`
-          const janelaPrincipal = document.getElementById('janelaPrincipal');
-          if (!janelaPrincipal || !janelaPrincipal.contains(target)) {
-              return; // Ignora cliques fora de `#janelaPrincipal`
-          }
+        // Mapeamento de elementos para funções baseado em `id`, `class` e `data-action`
+        const functionMap = {
+            'close-button': () => {
+                const botaoGravarEtapa = document.querySelector('.botao-add-etapa');
+                if (botaoGravarEtapa) {
+                    htmlGravacoes();
+                    closeEditEtapa();
+                } else {
+                    const botaoProsseguir = document.querySelector('.botao-prosseguir');
+                    if (botaoProsseguir) {
+                        const janela = document.getElementById('janelaPrincipal');
+                        janela.hidden = true;
+                    } else {
+                        htmlStart();
+                        closeEditEtapa();
+                    }
+                }
+            },
+            'botao-prosseguir': () => {
+                objetoDLTESTERDATA();
+            },
+            'testar-gravacoes': () => {
+                executarGravacoes(true);
+            },
+            'validaEtapas': () => {
+                executarGravacoes();
+            },
+            'interagir-com-elemento': () => {
+                htmlInteracoes();
+            },
+            'ir-para-pagina': () => {
+                htmlNavegacao();
+            },
+            'verificar-datalayer': () => {
+                console.warn('Função verificarDatalayer ainda não definida.');
+            },
+            'add-interacao': () => {
+                adicionarEtapa("interacao");
+            },
+            'add-navegacao': () => {
+                adicionarEtapa("navegacao");
+            }
+        };
 
-          // Mapeamento de elementos para funções baseado em `id`, `class` e `data-action`
-          const functionMap = {
-              'close-button': () => {
-                  const botaoGravarEtapa = document.querySelector('[class="botao-add-etapa"]');
-                  if (botaoGravarEtapa) {
-                      htmlGravacoes();
-                      closeEditEtapa();
-                  } else {
-                      const botaoProsseguir = document.querySelector('[class="botao-prosseguir"]');
-                      if (botaoProsseguir) {
+        // Encontra o elemento clicado ou seu ancestral mais próximo com `id`, `class` ou `data-action`
+        const closestElement = event.target.closest('[id], [class], [data-action]');
 
-                          const janela = document.querySelector('[id="janelaPrincipal"]');
-                          janela.hidden = true;
-                      } else {
-                          htmlStart();
-                          closeEditEtapa();
-                      }
-                  }
+        if (closestElement) {
+            // Verifica por `id`
+            if (closestElement.id && functionMap[closestElement.id]) {
+                functionMap[closestElement.id]();
+                return;
+            }
 
-              },
-              'botao-prosseguir': () => {
-                  objetoDLTESTERDATA();
-              },
-              'testar-gravacoes': () => {
-                  executarGravacoes(todas = true);
-              },
-              'validaEtapas': () => {
-                  executarGravacoes();
-              },
-              'interagir-com-elemento': () => {
-                  htmlInteracoes();
-              },
-              'ir-para-pagina': () => {
-                  htmlNavegacao();
-              },
-              'verificar-datalayer': () => {
-                  console.warn('Função verificarDatalayer ainda não definida.');
-              },
-              'add-interacao': () => {
-                  adicionarEtapa("interacao");
-              },
-              'add-navegacao': () => {
-                  adicionarEtapa("navegacao");
-              }
-          };
+            // Verifica por `class`
+            closestElement.classList.forEach((className) => {
+                if (functionMap[className]) {
+                    functionMap[className]();
+                    return;
+                }
+            });
 
-          // Verifica se o elemento possui um ID correspondente
-          if (target.id && functionMap[target.id]) {
-              functionMap[target.id]();
-              return;
-          }
+            // Verifica por `data-action`
+            if (closestElement.dataset.action && functionMap[closestElement.dataset.action]) {
+                functionMap[closestElement.dataset.action]();
+                return;
+            }
+        }
 
-          // Verifica se o elemento possui uma classe correspondente
-          target.classList.forEach((className) => {
-              if (functionMap[className]) {
-                  functionMap[className]();
-                  return;
-              }
-          });
+        console.log('Nenhuma ação definida para este elemento:', event.target);
+    });
+}
 
-          // Verifica se o elemento possui um atributo `data-action` correspondente
-          if (target.dataset.action && functionMap[target.dataset.action]) {
-              functionMap[target.dataset.action]();
-              return;
-          }
-
-          console.log('Nenhuma ação definida para este elemento:', target);
-      });
-  }
 
   (function () {
       // Criação do HTML da interface

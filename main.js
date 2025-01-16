@@ -55,39 +55,47 @@
         }
     }
   
+    function escapeCssSelector(selector) {
+        // Lista de caracteres especiais que precisam de escape
+        const specialChars = /([!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~])/g;
+        // Substitui cada caractere especial por uma versão escapada
+        return selector.replace(specialChars, '\\$1');
+    }
+    
     function getElementPathWithIndex(element) {
         const path = [];
         let index = -1; // Inicializa o índice como -1 para evitar inconsistências
-  
+    
         while (element && element.nodeType === Node.ELEMENT_NODE) {
             let selector = element.tagName.toLowerCase(); // Nome da tag
-  
+    
             if (element.id) {
                 // Se tiver ID, use-o diretamente
-                selector += `#${element.id}`;
+                selector += `#${escapeCssSelector(element.id)}`; // Escapar o ID
                 path.unshift(selector);
                 break; // IDs são únicos, podemos parar aqui
             } else {
                 // Processar classes do elemento
                 const className = Array.from(element.classList)
                     .filter(cls => cls.trim() !== "") // Remove classes vazias ou inválidas
+                    .map(cls => escapeCssSelector(cls)) // Escapar as classes
                     .join('.');
-  
+    
                 if (className) {
                     selector += `.${className}`;
                 }
-  
+    
                 path.unshift(selector);
             }
-  
+    
             // Subir para o elemento pai
             element = element.parentElement;
         }
-  
+    
         // Agora calcular o índice do link clicado entre todos os links no DOM
         const allElementsWithSameSelector = Array.from(document.querySelectorAll(path.join(' > ')));  // Seleciona todos os elementos com o mesmo seletor
         index = allElementsWithSameSelector.indexOf(event.target); // Encontra o índice correto do elemento clicado
-  
+    
         return { path: path.join(' > '), index };
     }
   

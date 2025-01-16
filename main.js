@@ -1034,6 +1034,13 @@
             width: 15px;
             border: solid black 2px;
         }
+
+
+        #janelaPrincipal .close-button {
+            height: 30px;
+            width: 30px;
+            box-sizing: border-box !important;
+        }
         `;
 
   

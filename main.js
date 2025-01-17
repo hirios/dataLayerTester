@@ -253,20 +253,20 @@
 
 
     function htmlDatalayer() {
-         document.querySelector('[id="janelaPrincipal"]').innerHTML = `<button class="close-button" style="top: 5px;position: relative;left: 280px;">✖</button>
-    
-    <div style="
-    gap: 10px;
-    display: flex;
-    flex-direction: column;
-">
-    
-<div id="list-button-datalayer">
-    
-<button class="button-from-datalayer">Data</button></div><textarea id="object-to-validation">    
-</textarea></div><!-- Novo botÃĢo posicionado exatamente acima do container de tarefas -->
-    
-    <button id="add-datalayer" class="botao-add-etapa">Gravar etapa</button>`
+         document.querySelector('[id="janelaPrincipal"]').innerHTML = `
+         <button class="close-button" style="top: 5px;position: relative;left: 280px;">✖</button>
+            <div style="gap: 10px;display: flex;flex-direction: column;">
+                <div id="list-button-datalayer">
+                    <button class="button-from-datalayer">Data</button>
+                </div>
+                <textarea id="object-to-validation"></textarea>
+            </div>
+        
+        <label class="toggle-switch">
+            <input id="add-datalayer" type="radio" onclick="(function(element) { console.log(element) })(this)" style="pointer-events: auto;">
+            <span class="slider"></span>
+        </label>
+        <button id="add-datalayer" class="botao-add-etapa">Gravar etapa</button>`
     }
 
   
@@ -832,7 +832,7 @@
               }
           }
   
-          console.log('Nenhuma ação definida para este elemento:', event.target);
+        //   console.log('Nenhuma ação definida para este elemento:', event.target);
       });
   }
   
@@ -1113,6 +1113,55 @@
             margin-top: 15px;
             position: relative;
         }
+
+
+   .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 25px;
+    }
+
+    /* Esconde o botão de rádio original */
+    .toggle-switch input[type="radio"] {
+      display: none;
+    }
+
+    /* Estilo da "caixa" do toggle */
+    .slider {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      border-radius: 25px;
+      transition: background-color 0.3s;
+      cursor: pointer;
+    }
+
+    /* Estilo do círculo do toggle */
+    .slider::before {
+      content: '';
+      position: absolute;
+      height: 19px;
+      width: 19px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      transition: transform 0.3s;
+    }
+
+    /* Quando o botão está selecionado */
+    input[type="radio"]:checked + .slider {
+      background-color: #4caf50;
+    }
+
+    /* Move o círculo para a direita quando selecionado */
+    input[type="radio"]:checked + .slider::before {
+      transform: translateX(25px);
+    }
         `;
 
   

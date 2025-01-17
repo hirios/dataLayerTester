@@ -138,6 +138,10 @@
   
         // Quando o usuário clicar no elemento
         janelaPrincipal.addEventListener('mousedown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
+                return; // Não inicia o arraste
+            }
+
             isDragging = true;
             offsetX = e.clientX - janelaPrincipal.offsetLeft;
             offsetY = e.clientY - janelaPrincipal.offsetTop;
@@ -246,6 +250,25 @@
     <button id="add-navegacao" class="botao-add-etapa">Gravar etapa</button>
     `
     }
+
+
+    function htmlDatalayer() {
+         document.querySelector('[id="janelaPrincipal"]').innerHTML = `<button class="close-button" style="top: 5px;position: relative;left: 280px;">✖</button>
+    
+    <div style="
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+">
+    
+<div id="list-button-datalayer">
+    
+<button class="button-from-datalayer">Data</button></div><textarea id="object-to-validation">    
+</textarea></div><!-- Novo botÃĢo posicionado exatamente acima do container de tarefas -->
+    
+    <button id="add-datalayer" class="botao-add-etapa">Gravar etapa</button>`
+    }
+
   
     function obterGravacaoById(id_gravacao) {
         const data = JSON.parse(localStorage.getItem('DLTESTERDATA'));
@@ -774,7 +797,7 @@
                   htmlNavegacao();
               },
               'verificar-datalayer': () => {
-                  console.warn('Função verificarDatalayer ainda não definida.');
+                  htmlDatalayer();
               },
               'add-interacao': () => {
                   adicionarEtapa("interacao");
@@ -1048,6 +1071,47 @@
             height: 30px;
             width: 30px;
             box-sizing: border-box !important;
+        }
+
+
+        #janelaPrincipal #list-button-datalayer {
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgb(255 255 255);
+            height: 200px;
+            width: 260px;
+            color: black;
+            border: 3px solid;
+            border-radius: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            align-items: center;
+        }
+
+        #janelaPrincipal #object-to-validation {
+                position: relative;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: rgb(255, 255, 255);
+                height: 200px;
+                width: 260px;
+                color: black;
+                border: 3px solid;
+                border-radius: 15px;
+                overflow-y: auto;
+                font-size: 10px;
+        }
+
+        #janelaPrincipal .button-from-datalayer {
+            height: 40px;
+            width: 180px;
+            background-color: #fffeae;
+            flex-shrink: 0;
+            margin-top: 15px;
+            position: relative;
         }
         `;
 

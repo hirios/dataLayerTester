@@ -1171,9 +1171,6 @@
         document.head.appendChild(styleElement);
     })();
   
-  
-  
-  
     htmlStart();
     associaBotoes();
     executarGravacoes();
